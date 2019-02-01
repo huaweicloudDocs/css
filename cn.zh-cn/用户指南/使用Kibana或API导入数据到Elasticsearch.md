@@ -67,6 +67,9 @@
     curl -X PUT "http://{Private network address and port number of the node} /_bulk" -H 'Content-Type: application/json' --data-binary @test.json
     ```
 
+    >![](public_sys-resources/icon-note.gif) **说明：**   
+    >其中，-X参数的参数值为命令，如“-X PUT“，-H参数的参数值为消息头，如“-H 'Content-Type: application/json' --data-binary @test.json“。添加的-k参数时，请勿将-k参数放置在参数与参数值之间。  
+
     **示例：**将“testdata.json“数据文件中的数据导入至Elasticsearch集群，此集群未进行通信加密，其中一个节点内网访问地址为“192.168.0.90“，端口号为“9200“。其中testdata.json文件中的数据如下所示：
 
     ```
@@ -81,7 +84,7 @@
     1.  可执行以下命令，创建my\_store索引。
 
         ```
-        curl -X PUT http://192.168.0.90:9200/my_store -d '  
+        curl -X PUT http://192.168.0.90:9200/my_store -H 'Content-Type: application/json' -d '
          { 
            "settings": { 
              "number_of_shards": 1 
@@ -98,7 +101,7 @@
                } 
              } 
            } 
-         }
+         }'
         ```
 
     2.  执行以下命令，导入testdata.json文件中的数据。
