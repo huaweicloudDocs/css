@@ -50,7 +50,7 @@ PUT /my_index
 
 ## 将数据存放在不同的索引<a name="section1581140613444"></a>
 
-Elasticsearch是基于Lucene进行索引和存储数据的，最佳的工作方式是密集的数据，即是所有的document拥有相同的字段。
+Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方式是密集的数据，即所有的document拥有相同的字段。
 
 -   **避免把无关联的数据放在同一个index**
 
@@ -246,7 +246,7 @@ scroll查询可以用来对Elasticsearch有效地执行大批量的文档查询�
 
 当使用查询情况时，查询会变成一个“评分“的查询。和不评分的查询类似，也要去判断这个文档是否匹配，同时还需要判断这个文档匹配的程度如何。此查询的典型用法是用于查找以下文档：
 
--   查找与full text search这个词语最佳匹配的文档。
+-   查找与full text search这个词语匹配的文档。
 -   包含run这个词，也能匹配runs、running、jog或者sprint。
 -   包含quick、brown和fox这几个词，词之间离的越近，文档相关性越高。
 -   标有lucene、search或java标签，标签越多，相关性越高。

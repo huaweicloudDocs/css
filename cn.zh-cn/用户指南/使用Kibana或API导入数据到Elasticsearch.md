@@ -55,6 +55,9 @@
 
 使用bulk API通过cURL命令导入数据文件，如下操作以JSON数据文件为例。
 
+>![](public_sys-resources/icon-note.gif) **说明：**   
+>使用API导入数据文件时，导入的数据文件大小不能超过50MB。  
+
 1.  登录即将接入集群的弹性云服务器。
 
     接入集群的详细操作指导请参见[在同一VPC内的弹性云服务器，直接调用Elasticsearch API](接入集群.md#section16223134914582)。
