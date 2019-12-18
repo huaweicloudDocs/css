@@ -113,6 +113,42 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
     }
     ```
 
+    如果集群开启了安全模式，则需要先下载证书。
+
+    1.  在集群基本信息页面下载证书。
+
+        **图 2**  下载证书<a name="fig124822581366"></a>  
+        ![](figures/下载证书.png "下载证书")
+
+    2.  将下载的证书存放到部署logstash服务器中。
+    3.  修改配置文件logstash-simple.conf。
+
+        以步骤[4](#li5164153542312)中“/tmp/access\_log/“的数据文件为例，输入数据文件从首行开始，且过滤条件保持为空，即不做任何数据处理操作。跳转主机的公网IP和端口号为“192.168.0.227:9200“。导入数据的索引名称为“myindex“，证书存放路径为“/logstash/logstash6.8/config/CloudSearchService.cer“。配置文件的示例如下所示，配置文件按实际数据情况修改完成后，输入“:wq“保存。
+
+        ```
+        input{
+            file {
+                path => "/tmp/access_log/*"
+                start_position => "beginning"
+            }
+        }
+        filter {
+            }
+        output{
+            elasticsearch{
+                hosts => ["https://192.168.0.227:9200"]
+                index => "myindex"
+                user => "admin"
+                password => "******"
+                cacert => "/logstash/logstash6.8/config/CloudSearchService.cer"
+            }
+        }
+        ```
+
+        >![](public_sys-resources/icon-note.gif) **说明：**   
+        >password：登录安全集群的密码。  
+
+
 7.  执行如下命令将Logstash收集的数据导入到集群中。
 
     ```
@@ -134,12 +170,17 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 
 ## Logstash部署在弹性云服务器上时导入数据<a name="section1098217174335"></a>
 
-当Logstash部署在同一VPC的弹性云服务时，导入数据的流程说明如[图2](#fig124034434127)所示。
+当Logstash部署在同一VPC的弹性云服务时，导入数据的流程说明如[图3](#fig124034434127)所示。
 
-**图 2**  Logstash部署在弹性云服务器上时导入数据示意图<a name="fig124034434127"></a>  
+**图 3**  Logstash部署在弹性云服务器上时导入数据示意图<a name="fig124034434127"></a>  
 ![](figures/Logstash部署在弹性云服务器上时导入数据示意图.png "Logstash部署在弹性云服务器上时导入数据示意图")
 
 1.  确保已部署Logstash的弹性云服务器与待导入数据的集群在同一虚拟私有云下，已开放安全组的9200端口的外网访问权限，且弹性云服务器已绑定弹性IP。
+
+    >![](public_sys-resources/icon-note.gif) **说明：**   
+    >-   如果同一个VPC内有多台服务器，只要其中一台绑定了弹性IP，其他的服务器可以不需要绑定弹性IP。通过绑定弹性IP的节点跳转到部署Logstash的节点即可。  
+    >-   如果有专线或者VPN，也不需要绑定弹性IP。  
+
 2.  <a name="li1652411439236"></a>使用PuTTY登录弹性云服务器。
 
     例如此服务器中存储了需要导入的数据文件“access\_20181029\_log“，文件存储路径为“/tmp/access\_log/“，此数据文件中包含的数据如下所示：
@@ -215,6 +256,42 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
         } 
     }
     ```
+
+    如果集群开启了安全模式，则需要先下载证书。
+
+    1.  在集群基本信息页面下载证书。
+
+        **图 4**  下载证书<a name="css_01_0048_fig124822581366"></a>  
+        ![](figures/下载证书.png "下载证书")
+
+    2.  将下载的证书存放到部署logstash服务器中。
+    3.  修改配置文件logstash-simple.conf。
+
+        以步骤[4](使用Logstash导入数据到Elasticsearch.md#li5164153542312)中“/tmp/access\_log/“的数据文件为例，输入数据文件从首行开始，且过滤条件保持为空，即不做任何数据处理操作。跳转主机的公网IP和端口号为“192.168.0.227:9200“。导入数据的索引名称为“myindex“，证书存放路径为“/logstash/logstash6.8/config/CloudSearchService.cer“。配置文件的示例如下所示，配置文件按实际数据情况修改完成后，输入“:wq“保存。
+
+        ```
+        input{
+            file {
+                path => "/tmp/access_log/*"
+                start_position => "beginning"
+            }
+        }
+        filter {
+            }
+        output{
+            elasticsearch{
+                hosts => ["https://192.168.0.227:9200"]
+                index => "myindex"
+                user => "admin"
+                password => "******"
+                cacert => "/logstash/logstash6.8/config/CloudSearchService.cer"
+            }
+        }
+        ```
+
+        >![](public_sys-resources/icon-note.gif) **说明：**   
+        >password：登录安全集群的密码。  
+
 
 4.  执行如下命令将Logstash收集的弹性云服务器的数据导入到集群中。
 
