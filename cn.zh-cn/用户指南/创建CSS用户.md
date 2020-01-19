@@ -23,7 +23,7 @@ CSS具有两种类型用户权限（CSS管理员权限和只读权限），在�
 
 ## 前提条件<a name="section17110143884619"></a>
 
-给用户组授权之前，请您了解用户组可以添加的CSS系统策略，请参见[权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)__。若您需要对除ECS之外的其它服务授权，IAM支持服务的所有策略请参见[权限策略](https://support.huaweicloud.com/usermanual-permissions/zh-cn_topic_0063498930.html)。
+给用户组授权之前，请您了解用户组可以添加的CSS系统策略，请参见[权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)__。若您需要对除CSS之外的其它服务授权，IAM支持服务的所有策略请参见[权限策略](https://support.huaweicloud.com/usermanual-permissions/zh-cn_topic_0063498930.html)。
 
 ## 步骤1：创建用户组并授权<a name="section6410511205416"></a>
 
@@ -65,12 +65,12 @@ CSS具有两种类型用户权限（CSS管理员权限和只读权限），在�
             **图 6**  选择策略视图<a name="fig1656621154613"></a>  
             ![](figures/选择策略视图.png "选择策略视图")
 
-        1.  在搜索框中搜索中搜索“Elasticsearch Administrator”，选择“Elasticsearch Administrator“为例；在已勾选策略的“项目\[作用范围\]”下拉框中，选择需要给该策略授权的项目（可选择多个项目）。CSS的系统策略说明，请参见[CSS权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)。
+        1.  在搜索框中搜索中搜索“Elasticsearch Administrator“，选择“Elasticsearch Administrator“为例；在已勾选策略的“项目\[作用范围\]“下拉框中，选择需要给该策略授权的项目（可选择多个项目）。CSS的系统策略说明，请参见[CSS权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)。
 
             **图 7**  选择策略和项目<a name="fig8880125814550"></a>  
             ![](figures/选择策略和项目.png "选择策略和项目")
 
-        2.  单击“确定”，完成用户组授权。
+        2.  单击“确定“，完成用户组授权。
 
     -   项目视图：您可以为一个项目同时配置多个策略。
         1.  在右侧滑窗中，单击“项目视图”；选择需要授权的“项目\[所属区域\]”，单击右侧的“选择策略”。
@@ -78,7 +78,7 @@ CSS具有两种类型用户权限（CSS管理员权限和只读权限），在�
             **图 8**  选择项目视图<a name="fig24821533491"></a>  
             ![](figures/选择项目视图.png "选择项目视图")
 
-        1.  在“选择策略”弹窗中，搜索“Elasticsearch Administrator”，选择“Elasticsearch Administrator”为例。CSS的系统策略说明，请参见[CSS权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)。
+        1.  在“选择策略”弹窗中，搜索“Elasticsearch Administrator“，选择“Elasticsearch Administrator“为例。CSS的系统策略说明，请参见[CSS权限管理](https://support.huaweicloud.com/productdesc-css/css_04_0014.html)。
 
             **图 9**  选择策略<a name="fig7461238103015"></a>  
             ![](figures/选择策略.png "选择策略")
@@ -131,7 +131,7 @@ IAM用户与企业中的实际员工或是应用程序相对应，有唯一的�
     **图 13**  IAM用户登录<a name="fig1556164664413"></a>  
     ![](figures/IAM用户登录.png "IAM用户登录")
 
-2.  在“IAM用户登录”页面，输入账号名、用户名及用户密码，使用新创建的用户登录。
+2.  在“IAM用户登录“页面，输入账号名、用户名及用户密码，使用新创建的用户登录。
 
     -   账号名为该IAM用户所属华为云账号的名称。
     -   用户名和密码为账号在IAM创建用户时输入的用户名和密码。
@@ -139,6 +139,6 @@ IAM用户与企业中的实际员工或是应用程序相对应，有唯一的�
     如果登录失败，您可以联系您的账号主体，确认用户名及密码是否正确，或是重置用户名及密码，重置方法请参见：[忘记IAM用户密码](https://support.huaweicloud.com/iam_faq/iam_01_0314.html#section1)。
 
 3.  登录成功后，进入华为云控制台，登录后默认区域为授权区域。
-4.  在“服务列表”中选择云搜索服务，进入CSS主界面，单击右上角“创建集群”，若提示权限不足，表示“Tenant Guest”已生效。
-5.  在“服务列表”中选择除云搜索服务外的任一服务，若提示权限不足，表示“Tenant Guest”已生效。
+4.  在“服务列表“中选择云搜索服务，进入CSS主界面，单击右上角“创建集群“，若提示权限不足，表示“Tenant Guest“已生效。
+5.  在“服务列表“中选择除云搜索服务外的任一服务，若提示权限不足，表示“Tenant Guest“已生效。
 
