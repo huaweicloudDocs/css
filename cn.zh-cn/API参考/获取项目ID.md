@@ -38,7 +38,7 @@
                 "previous": null,
                 "self": "https://www.example.com/v3/projects/a4a5d4098fb4474fa22cd05f897d6b99"
             },
-            "id": "a4a5d4098fb4474fa22cd05f897d6b99",
+            "id": "xxxxxxxxxx",
             "enabled": true
         }
     ],
