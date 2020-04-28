@@ -12,7 +12,7 @@
 1.  登录DIS管理控制台。
 2.  购买接入通道。
 
-    具体操作请参见《数据接入服务用户指南》中的[开通DIS通道](https://support.huaweicloud.com/usermanual-dis/zh-cn_topic_0034903799.html)。
+    具体操作请参见《数据接入服务用户指南》中的[开通DIS通道](https://support.huaweicloud.com/usermanual-dis/dis_01_0601.html)。
 
 3.  安装并配置DIS Agent。
 
@@ -22,11 +22,21 @@
 
     具体操作请参见《数据接入服务用户指南》中的[启动DIS Agent](https://support.huaweicloud.com/usermanual-dis/dis_01_0025.html)。
 
+    例如：将如下数据通过DIS Agent上传到DIS队列中。
+
+    ```
+    {"logName":"aaa","date":"bbb"}
+    {"logName":"ccc","date":"ddd"}
+    {"logName":"eee","date":"fff"}
+    {"logName":"ggg","date":"hhh"}
+    {"logName":"mmm","date":"nnn"}
+    ```
+
 5.  登录云搜索服务管理控制台。
 6.  在左侧导航栏中，选择“集群管理“，进入集群列表页面。
 7.  在集群列表页面中，单击待导入数据的集群“操作“列的“Kibana“。
 8.  在Kibana的左侧导航中选择“Dev Tools”，单击“Get to work“，进入Console界面。
-9.  （可选）在Console界面，执行命令创建待存储数据的索引，并指定自定义映射来定义数据类型。
+9.  在Console界面，执行命令创建待存储数据的索引，并指定自定义映射来定义数据类型。
 
     如果待导入数据的集群已存在可用的索引，则不需要再创建索引；如果待导入数据的集群不存在可用的索引，则需要参考如下示例创建索引。
 
@@ -35,18 +45,32 @@
     ```
     PUT /apache
     {
-      "mappings": {
-        "logs": {
-      "properties": {
-      "host": {"type": "keyword"},
-      "date": {"type": "date"},
-      "method": {"type": "keyword"},
-      "request": {"type": "keyword"},
-      "status": {"type": "keyword"},
-      "bytes": {"type": "integer"}
-          }
+        "settings": {
+            "number_of_shards": 1
+        },
+        "mappings": {
+            "logs": {
+                "properties": {
+                    "logName": {
+                        "type": "text",
+                        "analyzer": "ik_smart"
+                    },
+                    "date": {
+                        "type": "keyword"
+                    }
+                }
+            }
         }
-      }
+    }
+    ```
+
+    执行成功后显示如下：
+
+    ```
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "index" : "apache"
     }
     ```
 
@@ -72,7 +96,81 @@
     在Kibana控制台，输入如下命令，搜索数据。查看搜索结果，如果数据与导入数据一致，表示数据文件的数据已导入成功。
 
     ```
-    GET myindex/_search
+    GET apache/_search
     ```
+
+    执行成功后显示如下：
+
+    ```
+    {
+      "took": 81,
+      "timed_out": false,
+      "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+      },
+      "hits": {
+        "total": 5,
+        "max_score": 1,
+        "hits": [
+          {
+            "_index": "apache",
+            "_type": "logs",
+            "_id": "txfbqnEBPuwwWJWL-qvP",
+            "_score": 1,
+            "_source": {
+              "date": """{"logName":"aaa"""",
+              "logName": """"date":"bbb"}"""
+            }
+          },
+          {
+            "_index": "apache",
+            "_type": "logs",
+            "_id": "uBfbqnEBPuwwWJWL-qvP",
+            "_score": 1,
+            "_source": {
+              "date": """{"logName":"ccc"""",
+              "logName": """"date":"ddd"}"""
+            }
+          },
+          {
+            "_index": "apache",
+            "_type": "logs",
+            "_id": "uRfbqnEBPuwwWJWL-qvP",
+            "_score": 1,
+            "_source": {
+              "date": """{"logName":"eee"""",
+              "logName": """"date":"fff"}"""
+            }
+          },
+          {
+            "_index": "apache",
+            "_type": "logs",
+            "_id": "uhfbqnEBPuwwWJWL-qvP",
+            "_score": 1,
+            "_source": {
+              "date": """{"logName":"ggg"""",
+              "logName": """"date":"hhh"}"""
+            }
+          },
+          {
+            "_index": "apache",
+            "_type": "logs",
+            "_id": "uxfbqnEBPuwwWJWL-qvP",
+            "_score": 1,
+            "_source": {
+              "date": """{"logName":"mmm"""",
+              "logName": """"date":"nnn"}"""
+            }
+          }
+        ]
+      }
+    }
+    ```
+
+    >![](public_sys-resources/icon-note.gif) **说明：**   
+    >apache为创建的索引名称，需根据实际情况填写。  
 
 
