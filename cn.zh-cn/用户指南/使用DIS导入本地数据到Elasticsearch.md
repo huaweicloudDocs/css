@@ -16,7 +16,7 @@
 
 3.  安装并配置DIS Agent。
 
-    具体操作请参见《数据接入服务用户指南》中的[安装DIS Agent](https://support.huaweicloud.com/usermanual-dis/dis_01_0023.html)和[配置DIS Agent](https://support.huaweicloud.com/usermanual-dis/dis_01_0024.html)。
+    具体操作请参见《数据接入服务用户指南》中的[安装DIS Agent](https://support.huaweicloud.com/usermanual-dis/dis_01_0023.html)和[配置DIS Agent](https://support.huaweicloud.com/usermanual-dis/dis_01_0024.html)配置DIS Agent。
 
 4.  启动DIS Agent，将采集的本地数据上传到DIS队列中。
 
@@ -35,7 +35,7 @@
 5.  登录云搜索服务管理控制台。
 6.  在左侧导航栏中，选择“集群管理“，进入集群列表页面。
 7.  在集群列表页面中，单击待导入数据的集群“操作“列的“Kibana“。
-8.  在Kibana的左侧导航中选择“Dev Tools”，单击“Get to work“，进入Console界面。
+8.  在Kibana的左侧导航中选择“Dev Tools”，进入Console界面。
 9.  在Console界面，执行命令创建待存储数据的索引，并指定自定义映射来定义数据类型。
 
     如果待导入数据的集群已存在可用的索引，则不需要再创建索引；如果待导入数据的集群不存在可用的索引，则需要参考如下示例创建索引。
@@ -170,7 +170,7 @@
     }
     ```
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >apache为创建的索引名称，需根据实际情况填写。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >apache为创建的索引名称，需根据实际情况填写。
 
 

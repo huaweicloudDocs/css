@@ -8,7 +8,10 @@
 
 1.  登录Kibana Console页面，详细操作请参见[在管理控制台通过Kibana接入集群](接入集群.md#section9848115695612)。
 
-    首次登录时，需要在Kibana的左侧导航中选择“Dev Tools“，单击“Get to work“，进入Console界面。非首次登录可单击“Dev Tools“直接进入Kibana Console页面。
+    首次登录时，需要在Kibana的左侧导航中选择“Dev Tools“，进入Console界面。非首次登录可单击“Dev Tools“直接进入Kibana Console页面。
+
+    **图 1**  选择Dev Tools<a name="fig229165395511"></a>  
+    ![](figures/选择Dev-Tools.png "选择Dev-Tools")
 
 2.  （可选）在Console界面，执行命令创建待存储数据的索引，并指定自定义映射来定义数据类型。
 
@@ -16,28 +19,53 @@
 
     例如：在Console界面，执行如下命令，创建索引“my\_store“，并指定自定义映射来定义数据类型。
 
+    7.x之前版本
+
     ```
     PUT /my_store
     {
-      "settings": {
-        "number_of_shards": 1
-      },
-      "mappings": {
-        "products": {
-          "properties": {
-            "productName": {
-              "type": "text"
-              },
-            "size": {
-              "type": "keyword"
+        "settings": {
+            "number_of_shards": 1
+        },
+        "mappings": {
+            "products": {
+                "properties": {
+                    "productName": {
+                        "type": "text"
+                    },
+                    "size": {
+                        "type": "keyword"
+                    }
+                }
             }
-          }
         }
-      }
+    }
+    ```
+
+    7.x之后版本
+
+    ```
+    PUT /my_store
+    {
+        "settings": {
+            "number_of_shards": 1
+        },
+        "mappings": {
+            "properties": {
+                "productName": {
+                    "type": "text"
+                },
+                "size": {
+                    "type": "keyword"
+                }
+            }
+        }
     }
     ```
 
 3.  在Console界面的右侧文本框中输入要导入数据的POST命令，以导入一条数据为例，执行如下命令。
+
+    7.x之前版本
 
     ```
     POST /my_store/products/_bulk 
@@ -45,9 +73,17 @@
     {"productName":"Latest art shirts for women in 2017 autumn","size":"L"}
     ```
 
-    返回结果如[图1](#fig93061932172813)所示，当返回结果信息中“errors“字段的值为“false“时，表示导入数据成功。
+    7.x之后版本
 
-    **图 1**  返回消息<a name="fig93061932172813"></a>  
+    ```
+    POST /my_store/_bulk  
+    {"index":{}}  
+    {"productName":"Latest art shirts for women in 2017 autumn","size":"L"}
+    ```
+
+    返回结果如[图2](#fig86351225133018)所示，当返回结果信息中“errors“字段的值为“false“时，表示导入数据成功。
+
+    **图 2**  返回消息<a name="fig86351225133018"></a>  
     ![](figures/返回消息.png "返回消息")
 
 
@@ -55,8 +91,8 @@
 
 使用bulk API通过cURL命令导入数据文件，如下操作以JSON数据文件为例。
 
->![](public_sys-resources/icon-note.gif) **说明：**   
->使用API导入数据文件时，导入的数据文件大小不能超过50MB。  
+>![](public_sys-resources/icon-note.gif) **说明：** 
+>使用API导入数据文件时，建议导入的数据文件大小不能超过50MB。
 
 1.  登录即将接入集群的弹性云服务器。
 
@@ -70,8 +106,8 @@
     curl -X PUT "http://{Private network address and port number of the node} /_bulk" -H 'Content-Type: application/json' --data-binary @test.json
     ```
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >其中，-X参数的参数值为命令，如“-X PUT“，-H参数的参数值为消息头，如“-H 'Content-Type: application/json' --data-binary @test.json“。添加的-k参数时，请勿将-k参数放置在参数与参数值之间。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >其中，-X参数的参数值为命令，如“-X PUT“，-H参数的参数值为消息头，如“-H 'Content-Type: application/json' --data-binary @test.json“。添加的-k参数时，请勿将-k参数放置在参数与参数值之间。
 
     **示例：**将“testdata.json“数据文件中的数据导入至Elasticsearch集群，此集群未进行通信加密，其中一个节点内网访问地址为“192.168.0.90“，端口号为“9200“。其中testdata.json文件中的数据如下所示：
 
@@ -85,6 +121,8 @@
     导入数据的操作步骤如下所示：
 
     1.  可执行以下命令，创建my\_store索引。
+
+        7.x之前版本
 
         ```
         curl -X PUT http://192.168.0.90:9200/my_store -H 'Content-Type: application/json' -d '
@@ -105,6 +143,27 @@
              } 
            } 
          }'
+        ```
+
+        7.x之后版本
+
+        ```
+        curl -X PUT http://192.168.0.90:9200/my_store -H 'Content-Type: application/json' -d '
+        {
+            "settings": {
+                "number_of_shards": 1
+            },
+            "mappings": {
+                "properties": {
+                    "productName": {
+                        "type": "text"
+                    },
+                    "size": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }'
         ```
 
     2.  执行以下命令，导入testdata.json文件中的数据。

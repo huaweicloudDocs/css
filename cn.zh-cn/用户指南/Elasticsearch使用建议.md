@@ -34,7 +34,7 @@ Elasticsearch是开源搜索引擎，在深入使用Elasticsearch搜索引擎过
 
 在创建索引数据时，建议指定相关的分片数和副本数，否则会使用服务器中的默认配置参数“shards=5, replicas=1“，即分片数为5，副本数为1。
 
-分片数，与检索速度非常相关的的指标，如果分片数过少或过多都会导致检索比较慢。分片数过多会导致检索时打开比较多的文件，且会导致多台服务器之间通讯慢。而分片数过少会导致单个分片索引过大，所以检索速度慢。
+分片数，与检索速度非常相关的指标，如果分片数过少或过多都会导致检索比较慢。分片数过多会导致检索时打开比较多的文件，且会导致多台服务器之间通讯慢。而分片数过少会导致单个分片索引过大，所以检索速度慢。
 
 根据机器数、磁盘数、索引大小等设置分片数，建议单个分片不要超过30GB。总数据量除以分片数，则为分片的大小。
 
@@ -101,6 +101,8 @@ Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方�
 
     将logs\_2014-09-30索引下多个小segment合并成一个大的分片，以提高查询效率。
 
+    7.x之前版本
+
     ```
     PUT /logs_2014-09-30/_settings
     { "number_of_replicas": 0 }
@@ -108,6 +110,21 @@ Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方�
     POST /logs_2014-09-30/_forcemerge?max_num_segments=1
     
     PUT /logs_2014-09-30/_settings
+    { "number_of_replicas": 1 }
+    ```
+
+    7.x之后版本
+
+    ```
+    PUT /logs_2014-09-30/_settings 
+    { "number_of_replicas": 0 } 
+    
+    POST /logs_2014-09-30/_forcemerge
+    {
+      "max_num_segments":1
+    }
+    
+    PUT /logs_2014-09-30/_settings 
     { "number_of_replicas": 1 }
     ```
 
@@ -119,6 +136,8 @@ Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方�
     在Elasticsearch中string字段被拆分成两种新的数据类型：text用于全文搜索的，而keyword用于关键词搜索。
 
     对于不需要分词的字符串精确值字段，如标签或枚举，建议配置为keyword类型。
+
+    7.x之前版本
 
     ```
     PUT my_index1
@@ -138,11 +157,31 @@ Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方�
     }
     ```
 
+    7.x之后版本
+
+    ```
+    PUT my_index1 
+    { 
+      "mappings": { 
+             "properties": { 
+            "tags": { 
+              "type":  "keyword" 
+            }, 
+            "full_name": { 
+              "type":  "text" 
+            } 
+          } 
+        } 
+      }
+    ```
+
 -   **基于text字段的聚合统计**
 
     分词字段的聚合统计不是一种常见的需求。在Elasticsearch对于分词字段的聚合统计需要用到fielddata，默认是禁用的，开启fielddata会带来较大的内存负担。
 
     建议的做法是分词字符串进行多字段映射，映射为一个text字段用于全文检索，和一个keyword字段用于聚合统计。
+
+    7.x之前版本
 
     ```
     PUT my_index2
@@ -164,6 +203,26 @@ Elasticsearch是基于Lucene进行索引和存储数据的，主要的工作方�
     }
     ```
 
+    7.x之后版本
+
+    ```
+    PUT my_index2
+    {
+        "mappings": {
+                "properties": {
+                    "full_name": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            }
+      }
+    ```
+
 
 ## 使用索引模板<a name="section5914550314410"></a>
 
@@ -173,6 +232,8 @@ Elasticsearch支持通过索引模板控制一些新建索引的设置（setting
 -   多个索引模板可以通过order指定覆盖顺序。数值越大，优先级越高。
 
 如下示例表示，logstash-\*匹配的索引采用my\_logs模板，且my\_logs模板的优先级数值为1。
+
+7.x之前版本
 
 ```
 PUT /_template/my_logs 
@@ -191,6 +252,29 @@ PUT /_template/my_logs
   },
   "aliases": {
     "last_3_months": {} 
+  }
+}
+```
+
+7.x之后版本
+
+```
+PUT /_template/my_logsa
+{
+  "index_patterns": ["logstasaah-*"],
+  "order": 1,
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "properties": {
+      "_all": {
+        "enabled": false
+      }
+    }
+  },
+  "aliases": {
+    "last_3_months": {}
   }
 }
 ```
@@ -257,6 +341,8 @@ scroll查询可以用来对Elasticsearch有效地执行大批量的文档查询�
 
 示例：在Kibana的Console界面中，执行如下命令。validate请求会告诉您这个查询不合法。
 
+7.x之前版本
+
 ```
 GET /gb/tweet/_validate/query 
 {   
@@ -268,7 +354,22 @@ GET /gb/tweet/_validate/query
 }
 ```
 
+7.x之后版本
+
+```
+GET /gb/tweet/_validate/query  
+{ 
+"query": { 
+   "productName" : { 
+  "match" : "really powerful" 
+  } 
+  } 
+ }
+```
+
 为了找出查询不合法的原因，可以把explain参数加到查询字符串中，执行如下命令。
+
+7.x之前版本
 
 ```
 GET /gb/tweet/_validate/query?explain 
@@ -281,6 +382,19 @@ GET /gb/tweet/_validate/query?explain
  }
 ```
 
+7.x之后版本
+
+```
+GET /gb/tweet/_validate/query?explain
+{    
+ "query": {       
+ "productName" : {        
+   "match" : "really powerful"      
+  }     
+}  
+}
+```
+
 返回结果如下所示，可以从返回结果看出查询类型（match）与字段名称（tweet）搞混了。
 
 ```
@@ -288,19 +402,6 @@ GET /gb/tweet/_validate/query?explain
   "valid": false,
   "error": "org.elasticsearch.common.ParsingException: no [query] registered for [tweet]"
 }
-```
-
-如下为此query的正确用法，可以用validate请求结合explain参数检测：
-
-```
-GET /gb/tweet/_validate/query?explain 
-{    
-"query": {    
-   "match" : {        
-  "tweet" : "really powerful"     
-  }  
-  }
- }
 ```
 
 因此，对于合法查询，使用explain参数将返回可读的描述，这对准确理解云搜索服务是如何解析query是非常有帮助的。

@@ -94,8 +94,8 @@ CSV格式返回数据时，每行对应一个文档，每列对应一个字段�
     </tbody>
     </table>
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >与任何复杂查询一样，大型UNION和MINUS语句可能会使集群资源紧张甚至崩溃。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >与任何复杂查询一样，大型UNION和MINUS语句可能会使集群资源紧张甚至崩溃。
 
 
 -   条件Conditions
@@ -296,8 +296,8 @@ CSV格式返回数据时，每行对应一个文档，每列对应一个字段�
     </tbody>
     </table>
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >必须在文档映射中启用fielddata才能使大多数字符串函数正常工作。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >必须在文档映射中启用fielddata才能使大多数字符串函数正常工作。
 
 
 -   连接操作Joins
@@ -329,7 +329,7 @@ CSV格式返回数据时，每行对应一个文档，每列对应一个字段�
     </tbody>
     </table>
 
-    相关约束和限制，参考“连接操作Joins”
+    相关约束和限制，参考“连接操作Joins”。
 
 
 -   展示Show

@@ -12,7 +12,11 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 ## 前提条件<a name="section371994174412"></a>
 
 -   为方便操作，建议采用Linux操作系统的机器部署Logstash。
--   Logstash的下载路径为：[https://www.elastic.co/downloads/logstash](https://www.elastic.co/downloads/logstash)
+-   Logstash的下载路径为：[https://www.elastic.co/cn/downloads/logstash-oss](https://www.elastic.co/cn/downloads/logstash-oss)
+
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >Logstash要求使用OSS版本，选择和CSS一致版本。
+
 -   安装完Logstash后，再根据如下步骤导入数据。安装Logstash的操作指导，请参见：[https://www.elastic.co/guide/en/logstash/current/installing-logstash.html](https://www.elastic.co/guide/en/logstash/current/installing-logstash.html)
 -   安装Logstash之前，需要先安装JDK。在Linux操作系统中，您可以执行**yum -y install java-1.8.0**命令直接安装1.8.0版本JDK。在Windows操作系统中，您可以访问[JDK官网](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)，下载符合操作系统版本的JDK，并根据指导安装。
 -   在“[Logstash部署在弹性云服务器上时导入数据](#section1098217174335)”场景中，请确保此弹性云服务器与接入的Elasticsearch集群在同一个VPC下。
@@ -37,10 +41,10 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
     ssh -g -L <跳转主机的本地端口:节点的内网访问地址和端口号> -N -f root@<跳转主机的私网IP地址>
     ```
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >-   _<_跳转主机的本地端口_\>_：为步骤[1](#li1648853125014)中的端口。  
-    >-   _<节点的内网访问地址和端口号\>_：为集群中某一节点的内网访问地址和端口号。当该节点出现故障时，将导致命令执行失败。如果集群包含多个节点，可以将_<__节点的内网访问地址和端口号\>_替换为集群中另一节点的内网访问地址和端口号；如果集群只包含一个节点，则需要将该节点修复之后再次执行命令进行端口映射。  
-    >-   <__跳转主机_的私网IP地址_\>：打开弹性云服务器管理控制台，从“IP地址“列中获取标有“私网“对应的IP地址。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >-   _<_跳转主机的本地端口_\>_：为步骤[1](#li1648853125014)中的端口。
+    >-   _<节点的内网访问地址和端口号\>_：为集群中某一节点的内网访问地址和端口号。当该节点出现故障时，将导致命令执行失败。如果集群包含多个节点，可以将_<__节点的内网访问地址和端口号\>_替换为集群中另一节点的内网访问地址和端口号；如果集群只包含一个节点，则需要将该节点修复之后再次执行命令进行端口映射。
+    >-   <__跳转主机_的私网IP地址_\>：打开弹性云服务器管理控制台，从“IP地址“列中获取标有“私网“对应的IP地址。
 
     例如：跳转主机对外开放的端口号为9200，节点的内网访问地址和端口号为192.168.0.81:9200，跳转主机的私网IP地址为192.168.0.227，需要执行如下命令进行端口映射。
 
@@ -107,18 +111,21 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
     output { 
         elasticsearch { 
           hosts => "192.168.0.227:9200"
-          index => myindex
-          document_type => mytype
+          index => "myindex"
+         
         } 
     }
     ```
+
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >如果在使用中出现license相关的报错，可以尝试设置ilm\_enabled =\> false。
 
     如果集群开启了安全模式，则需要先下载证书。
 
     1.  在集群基本信息页面下载证书。
 
-        **图 2**  下载证书<a name="fig575617401951"></a>  
-        ![](figures/下载证书.png "下载证书")
+        **图 2**  下载证书<a name="fig3825111015528"></a>  
+        ![](figures/下载证书-5.png "下载证书-5")
 
     2.  将下载的证书存放到部署logstash服务器中。
     3.  修改配置文件logstash-simple.conf。
@@ -145,8 +152,8 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
         }
         ```
 
-        >![](public_sys-resources/icon-note.gif) **说明：**   
-        >password：登录安全集群的密码。  
+        >![](public_sys-resources/icon-note.gif) **说明：** 
+        >password：登录安全集群的密码。
 
 
 7.  执行如下命令将Logstash收集的数据导入到集群中。
@@ -158,7 +165,11 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 8.  登录云搜索服务管理控制台。
 9.  在左侧导航栏中，选择“集群管理“，进入集群列表页面。
 10. 在集群列表页面中，单击待导入数据的集群“操作“列的“Kibana“。
-11. 在Kibana的左侧导航中选择“Dev Tools“，单击“Get to work“，进入Console界面。
+11. 在Kibana的左侧导航中选择“Dev Tools“，进入Console界面。
+
+    **图 3**  登录Dev Tools界面<a name="fig164001949115016"></a>  
+    ![](figures/登录Dev-Tools界面.png "登录Dev-Tools界面")
+
 12. 在已打开的Kibana的Console界面，通过搜索获取已导入的数据。
 
     在Kibana控制台，输入如下命令，搜索数据。查看搜索结果，如果数据与导入数据一致，表示数据文件的数据已导入成功。
@@ -170,16 +181,16 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 
 ## Logstash部署在弹性云服务器上时导入数据<a name="section1098217174335"></a>
 
-当Logstash部署在同一VPC的弹性云服务时，导入数据的流程说明如[图3](#fig124034434127)所示。
+当Logstash部署在同一VPC的弹性云服务时，导入数据的流程说明如[图4](#fig124034434127)所示。
 
-**图 3**  Logstash部署在弹性云服务器上时导入数据示意图<a name="fig124034434127"></a>  
+**图 4**  Logstash部署在弹性云服务器上时导入数据示意图<a name="fig124034434127"></a>  
 ![](figures/Logstash部署在弹性云服务器上时导入数据示意图.png "Logstash部署在弹性云服务器上时导入数据示意图")
 
 1.  确保已部署Logstash的弹性云服务器与待导入数据的集群在同一虚拟私有云下，已开放安全组的9200端口的外网访问权限，且弹性云服务器已绑定弹性IP。
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >-   如果同一个VPC内有多台服务器，只要其中一台绑定了弹性IP，其他的服务器可以不需要绑定弹性IP。通过绑定弹性IP的节点跳转到部署Logstash的节点即可。  
-    >-   如果有专线或者VPN，也不需要绑定弹性IP。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >-   如果同一个VPC内有多台服务器，只要其中一台绑定了弹性IP，其他的服务器可以不需要绑定弹性IP。通过绑定弹性IP的节点跳转到部署Logstash的节点即可。
+    >-   如果有专线或者VPN，也不需要绑定弹性IP。
 
 2.  <a name="li1652411439236"></a>使用PuTTY登录弹性云服务器。
 
@@ -251,8 +262,8 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
     output { 
         elasticsearch { 
           hosts => "192.168.0.81:9200"
-          index => myindex
-          document_type => mytype
+          index => "myindex"
+          
         } 
     }
     ```
@@ -261,13 +272,13 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 
     1.  在集群基本信息页面下载证书。
 
-        **图 4**  下载证书<a name="css_01_0048_fig575617401951"></a>  
-        ![](figures/下载证书.png "下载证书")
+        **图 5**  下载证书<a name="fig10818195019524"></a>  
+        ![](figures/下载证书-6.png "下载证书-6")
 
     2.  将下载的证书存放到部署logstash服务器中。
     3.  修改配置文件logstash-simple.conf。
 
-        以步骤[4](使用Logstash导入数据到Elasticsearch.md#li5164153542312)中“/tmp/access\_log/“的数据文件为例，输入数据文件从首行开始，且过滤条件保持为空，即不做任何数据处理操作。跳转主机的公网IP和端口号为“192.168.0.227:9200“。导入数据的索引名称为“myindex“，证书存放路径为“/logstash/logstash6.8/config/CloudSearchService.cer“。配置文件的示例如下所示，配置文件按实际数据情况修改完成后，输入“:wq“保存。
+        以步骤[2](#li1652411439236)中“/tmp/access\_log/“的数据文件为例，输入数据文件从首行开始，且过滤条件保持为空，即不做任何数据处理操作。跳转主机的公网IP和端口号为“192.168.0.227:9200“。导入数据的索引名称为“myindex“，证书存放路径为“/logstash/logstash6.8/config/CloudSearchService.cer“。配置文件的示例如下所示，配置文件按实际数据情况修改完成后，输入“:wq“保存。
 
         ```
         input{
@@ -289,8 +300,8 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
         }
         ```
 
-        >![](public_sys-resources/icon-note.gif) **说明：**   
-        >password：登录安全集群的密码。  
+        >![](public_sys-resources/icon-note.gif) **说明：** 
+        >password：登录安全集群的密码。
 
 
 4.  执行如下命令将Logstash收集的弹性云服务器的数据导入到集群中。
@@ -302,7 +313,11 @@ Logstash 是开源的服务器端数据处理管道，能够同时从多个来�
 5.  登录云搜索服务管理控制台。
 6.  在左侧导航栏中，选择“集群管理“，进入集群列表页面。
 7.  在集群列表页面中，单击待导入数据的集群“操作“列的“Kibana“。
-8.  在Kibana的左侧导航中选择“Dev Tools“，单击“Get to work“，进入Console界面。
+8.  在Kibana的左侧导航中选择“Dev Tools“，进入Console界面。
+
+    **图 6**  选择Dev Tools<a name="fig14934191615547"></a>  
+    ![](figures/选择Dev-Tools.png "选择Dev-Tools")
+
 9.  在已打开的Kibana的Console界面，通过搜索获取已导入的数据。
 
     在Kibana控制台，输入如下命令，搜索数据。查看搜索结果，如果数据与导入数据一致，表示数据文件的数据已导入成功。

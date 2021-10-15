@@ -14,6 +14,8 @@
 
     具体操作请参见《对象存储服务控制台指南》中的[创建桶](https://support.huaweicloud.com/usermanual-obs/obs_03_0306.html)。
 
+    创建的OBS桶需满足“区域”必须跟创建集群的区域保持一致。
+
 3.  将数据文件上传到OBS桶中。
 
     具体操作请参见《对象存储服务控制台指南》中的[上传文件](https://support.huaweicloud.com/usermanual-obs/obs_03_0307.html)。
@@ -33,12 +35,18 @@
 4.  登录云搜索服务管理控制台。
 5.  在左侧导航栏中，选择“集群管理“，进入集群列表页面。
 6.  在集群列表页面中，单击待导入数据的集群“操作“列的“Kibana“。
-7.  在Kibana的左侧导航中选择“Dev Tools”，单击“Get to work“，进入Console界面。
+7.  在Kibana的左侧导航中选择“Dev Tools”，进入Console界面。
+
+    **图 2**  选择Dev Tools<a name="fig175463012471"></a>  
+    ![](figures/选择Dev-Tools.png "选择Dev-Tools")
+
 8.  在Console界面，执行命令创建待存储数据的索引，并指定自定义映射来定义数据类型。
 
     如果待导入数据的集群已存在可用的索引，则不需要再创建索引；如果待导入数据的集群不存在可用的索引，则需要参考如下示例创建索引。
 
     例如：在Console界面，执行如下命令，创建索引“demo“，并指定自定义映射来定义数据类型。
+
+    7.x之前版本
 
     ```
     PUT /demo
@@ -60,6 +68,28 @@
         }
       }
     }
+    ```
+
+    7.x之后版本
+
+    ```
+    PUT /demo
+    {
+      "settings": {
+        "number_of_shards": 1
+      },
+      "mappings": {
+          "properties": {
+            "productName": {
+              "type": "text",
+              "analyzer": "ik_smart"
+            },
+            "size": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
     ```
 
     执行成功后显示如下：
@@ -188,7 +218,7 @@
     }
     ```
 
-    >![](public_sys-resources/icon-note.gif) **说明：**   
-    >demo为创建的索引名称，需根据实际情况填写。  
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >demo为创建的索引名称，需根据实际情况填写。
 
 

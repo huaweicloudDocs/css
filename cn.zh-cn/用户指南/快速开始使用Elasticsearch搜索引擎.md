@@ -33,11 +33,11 @@
 
 ## 步骤1：创建集群<a name="section96881833619"></a>
 
-在开始搜索数据之前，您需要创建一个集群，其搜索引擎为Elasticsearch。例如，您可以创建一个名称为“Sample-ESCluster“，版本为“5.5.1“的集群。此集群仅用于入门指导使用，建议选用“节点规格“为“ess.spec-2u16g”，“节点存储“为“高I/O“，“节点存储容量“为“40GB“。详细操作步骤请参见[创建集群](创建集群.md)。
+在开始搜索数据之前，您需要创建一个集群，其搜索引擎为Elasticsearch。例如，您可以创建一个名称为“Sample-ESCluster“的集群。此集群仅用于入门指导使用，建议选用“节点规格“为“ess.spec-4u8g”，“节点存储“为“高I/O“，“节点存储容量“为“40GB“。详细操作步骤请参见[创建Elasticsearch类型集群（非安全模式）](创建Elasticsearch类型集群（非安全模式）.md)。
 
-集群创建完成后，在集群列表查看已创建的集群，集群状态为“可用”表示集群创建成功。如[图1](#fig44331131151411)所示。
+集群创建完成后，在集群列表查看已创建的集群，集群状态为“可用”表示集群创建成功。如[图1](#fig9991441448)所示。
 
-**图 1**  创建集群<a name="fig44331131151411"></a>  
+**图 1**  创建集群<a name="fig9991441448"></a>  
 ![](figures/创建集群.png "创建集群")
 
 ## 步骤2：导入数据<a name="section398512163445"></a>
@@ -45,17 +45,16 @@
 云搜索服务支持通过云数据迁移（简称CDM）、数据接入服务（简称DIS）、Logstash、Kibana或API将数据导入到Elasticsearch。其中Kibana是Elasticsearch的图形化界面，便于交互验证，因此，这里以Kibana为例介绍将数据导入到Elasticsearch的操作流程。
 
 1.  在云搜索服务的“集群管理“页面上，单击集群“操作“列的“Kibana“访问集群。
+2.  在Kibana的左侧导航中选择“Dev Tools”，单击“Get to work“，进入Console界面，如[图2](#fig1830133281516)所示。
 
-    ![](figures/访问集群.png)
+    Console左侧区域为输入框，右侧为结果输出区域，![](figures/icon-run-kibana.png)为执行命令按钮。
 
-2.  在Kibana的左侧导航中选择“Dev Tools”，单击“Get to work“，进入Console界面，如[图2](#fig221172817246)所示。
-
-    Console左侧区域为输入框，右侧为结果输出区域。
-
-    **图 2**  Console界面<a name="fig221172817246"></a>  
+    **图 2**  Console界面<a name="fig1830133281516"></a>  
     ![](figures/Console界面.png "Console界面")
 
 3.  在Console界面，执行如下命令创建索引“my\_store“。
+
+    （7.x之前版本）
 
     ```
     PUT /my_store
@@ -79,15 +78,64 @@
     }
     ```
 
-    返回结果如[图3](#fig421152812246)所示。
+    （7.x之后版本）
 
-    **图 3**  执行创建索引命令后的返回结果<a name="fig421152812246"></a>  
-    ![](figures/执行创建索引命令后的返回结果.png "执行创建索引命令后的返回结果")
+    ```
+    PUT /my_store
+    {
+      "settings": {
+        "number_of_shards": 1
+      },
+      "mappings": {
+              "properties": {
+            "productName": {
+              "type": "text",
+              "analyzer": "ik_smart"
+            },
+            "size": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    ```
+
+    返回结果如下所示。
+
+    ```
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "index" : "my_store"
+    }
+    ```
 
 4.  在Console界面，执行如下命令，将数据导入到“my\_store“索引中。
 
+    （7.x之前版本）
+
     ```
     POST /my_store/products/_bulk
+    {"index":{}}
+    {"productName":"2017秋装新款文艺衬衫女装","size":"L"}
+    {"index":{}}
+    {"productName":"2017秋装新款文艺衬衫女装","size":"M"}
+    {"index":{}}
+    {"productName":"2017秋装新款文艺衬衫女装","size":"S"}
+    {"index":{}}
+    {"productName":"2018春装新款牛仔裤女装","size":"M"}
+    {"index":{}}
+    {"productName":"2018春装新款牛仔裤女装","size":"S"}
+    {"index":{}}
+    {"productName":"2017春装新款休闲裤女装","size":"L"}
+    {"index":{}}
+    {"productName":"2017春装新款休闲裤女装","size":"S"}
+    ```
+
+    （7.x之后版本）
+
+    ```
+    POST /my_store/_doc/_bulk
     {"index":{}}
     {"productName":"2017秋装新款文艺衬衫女装","size":"L"}
     {"index":{}}
@@ -115,6 +163,8 @@
 
     执行命令如下所示。
 
+    （7.x之前版本）
+
     ```
     GET /my_store/products/_search
     {
@@ -124,10 +174,81 @@
     }
     ```
 
-    返回结果如[图4](#fig38028585148)所示。
+    （7.x之后版本）
 
-    **图 4**  执行全文检索命令后的返回结果<a name="fig38028585148"></a>  
-    ![](figures/执行全文检索命令后的返回结果.png "执行全文检索命令后的返回结果")
+    ```
+    GET /my_store/_search
+    {
+      "query": {"match": {
+        "productName": "春装牛仔裤"
+      }}
+    }
+    ```
+
+    返回结果如下所示。
+
+    ```
+    {
+      "took" : 3,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 1,
+        "successful" : 1,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 4,
+          "relation" : "eq"
+        },
+        "max_score" : 1.7965372,
+        "hits" : [
+          {
+            "_index" : "my_store",
+            "_type" : "_doc",
+            "_id" : "9xf6VHIBfClt6SDjw7H5",
+            "_score" : 1.7965372,
+            "_source" : {
+              "productName" : "2018春装新款牛仔裤女装",
+              "size" : "M"
+            }
+          },
+          {
+            "_index" : "my_store",
+            "_type" : "_doc",
+            "_id" : "-Bf6VHIBfClt6SDjw7H5",
+            "_score" : 1.7965372,
+            "_source" : {
+              "productName" : "2018春装新款牛仔裤女装",
+              "size" : "S"
+            }
+          },
+          {
+            "_index" : "my_store",
+            "_type" : "_doc",
+            "_id" : "-Rf6VHIBfClt6SDjw7H5",
+            "_score" : 0.5945667,
+            "_source" : {
+              "productName" : "2017春装新款休闲裤女装",
+              "size" : "L"
+            }
+          },
+          {
+            "_index" : "my_store",
+            "_type" : "_doc",
+            "_id" : "-hf6VHIBfClt6SDjw7H5",
+            "_score" : 0.5945667,
+            "_source" : {
+              "productName" : "2017春装新款休闲裤女装",
+              "size" : "S"
+            }
+          }
+        ]
+      }
+    }
+    
+    ```
 
     -   Elasticsearch支持分词，上面执行命令会将“春装牛仔裤”分词为“春装”和“牛仔裤”。
     -   Elasticsearch支持全文检索，上面执行命令会在所有商品信息中搜索包含“春装”或“牛仔裤”的商品信息。
@@ -140,6 +261,8 @@
     该电商网站可以提供聚合结果显示功能，例如： 对“春装”对应的产品按照尺码分类，统计不同尺码的数量。这里使用Kibana演示聚合结果显示功能在后台的执行命令和返回结果。
 
     执行命令如下所示。
+
+    （7.x之前版本）
 
     ```
     GET /my_store/products/_search
@@ -156,10 +279,107 @@
     }
     ```
 
-    返回结果如[图5](#fig275934121813)所示。
+    （7.x之后版本）
 
-    **图 5**  执行聚合结果显示命令后的返回结果<a name="fig275934121813"></a>  
-    ![](figures/执行聚合结果显示命令后的返回结果.png "执行聚合结果显示命令后的返回结果")
+    ```
+    GET /my_store/_search
+    {
+    "query": {
+    "match": { "productName": "春装" }
+    },
+    "size": 0,
+    "aggs": {
+    "sizes": {
+    "terms": { "field": "size" }
+    }
+    }
+    }
+    ```
+
+    返回结果如下所示。
+
+    （7.x之前版本）
+
+    ```
+    {
+      "took" : 31,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 1,
+        "successful" : 1,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : 4,
+        "max_score" : 0.0,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "sizes" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [
+            {
+              "key" : "S",
+              "doc_count" : 2
+            },
+            {
+              "key" : "L",
+              "doc_count" : 1
+            },
+            {
+              "key" : "M",
+              "doc_count" : 1
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+    （7.x之后版本 ）
+
+    ```
+    {
+      "took" : 3,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 1,
+        "successful" : 1,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 4,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "sizes" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [
+            {
+              "key" : "S",
+              "doc_count" : 2
+            },
+            {
+              "key" : "L",
+              "doc_count" : 1
+            },
+            {
+              "key" : "M",
+              "doc_count" : 1
+            }
+          ]
+        }
+      }
+    }
+    ```
 
 
 ## 步骤4：删除集群<a name="section75027114374"></a>
@@ -169,6 +389,10 @@
 由于集群删除后，数据无法恢复，请谨慎操作。
 
 1.  登录云搜索服务管理控制台。在左侧菜单栏选择“集群管理“。
-2.  进入集群管理页面，选中“Sample-ESCluster“集群所在行，在操作列单击“更多\>删除“。
+2.  进入集群管理页面，选中“Sample-ESCluster“集群所在行，在操作列单击“更多“\>“删除“。
+
+    **图 3**  删除集群<a name="fig174513134125"></a>  
+    ![](figures/删除集群.png "删除集群")
+
 3.  在弹出的确认对话框中，单击“确定“完成操作。
 
